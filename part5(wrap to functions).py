@@ -30,12 +30,12 @@ def create_dataframe(data, num_dimensions):
     return pd.DataFrame(data, columns=column_names)
 
 def visualize_synthetic_data(df):
-    plt.figure(figsize=(8, 6))
+    fig, ax = plt.subplots(figsize=(8, 6))
     sns.scatterplot(x='Feature_1', y='Feature_2', data=df, color='blue', palette='viridis')
     plt.title('Synthetic Data Distribution')
     plt.xlabel('Feature 1')
     plt.ylabel('Feature 2')
-    plt.show()
+    return fig
 
 def split_data(df):
     X = df.iloc[:, :-1]
@@ -58,7 +58,7 @@ def load_model(filename="trained_model.joblib"):
 
 def visualize_decision_boundaries(model, X, y, df):
     # Visualization of Decision Boundaries
-    plt.figure(figsize=(12, 6))
+    fig, ax = plt.subplots(figsize=(12, 6))
 
     # Plot actual data points
     plt.subplot(1, 2, 1)
@@ -82,7 +82,7 @@ def visualize_decision_boundaries(model, X, y, df):
     plt.ylabel('Feature 2')
     plt.legend(title='Class')
 
-    plt.show()
+    return fig
 
 def evaluate_model(model, X_test, y_test, df):
     # Predict on the test set
@@ -95,7 +95,7 @@ def evaluate_model(model, X_test, y_test, df):
     print(classification_report(y_test, y_pred))
 
     # Plot actual and predicted data points with more meaningful plot titles
-    plt.figure(figsize=(12, 6))
+    fig, ax = plt.subplots(figsize=(12, 6))
 
     # Plot actual data points
     plt.subplot(1, 2, 1)
@@ -112,7 +112,7 @@ def evaluate_model(model, X_test, y_test, df):
     plt.xlabel('Feature 1')
     plt.ylabel('Feature 2')
 
-    plt.show()
+    return fig
 
 def main():
     set_random_seed()
@@ -126,7 +126,8 @@ def main():
     data = generate_synthetic_data(class_properties)
     df = create_dataframe(data, num_dimensions=2)
 
-    visualize_synthetic_data(df)
+    vsd = visualize_synthetic_data(df)
+    st.pyplot(vsd)
 
     X_train, X_test, y_train, y_test = split_data(df)
 
@@ -136,9 +137,11 @@ def main():
 
     loaded_model = load_model()
 
-    visualize_decision_boundaries(loaded_model, X_test, y_test, df)
+    vdb = visualize_decision_boundaries(loaded_model, X_test, y_test, df)
+    st.pyplot(vdb)
 
-    evaluate_model(loaded_model, X_test, y_test, df)
+    fig = evaluate_model(loaded_model, X_test, y_test, df)
+    st.pyplot(fig)
 
 if __name__ == "__main__":
     main()
