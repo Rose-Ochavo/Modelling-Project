@@ -115,31 +115,47 @@ def evaluate_model(model, X_test, y_test, df):
     return fig
 
 def main():
+    # Set random seed for reproducibility
     set_random_seed()
 
+    # Define class properties for synthetic data generation
     class_properties = {
         0: {'mean': [25, 30], 'std': [5, 4]},
         1: {'mean': [40, 45], 'std': [6, 5]},
         2: {'mean': [55, 60], 'std': [4, 3.5]}
     }
 
+    # Generate synthetic data and create a DataFrame
     data = generate_synthetic_data(class_properties)
     df = create_dataframe(data, num_dimensions=2)
 
+    # Streamlit setup
+    st.title("Decision Tree Visualization App")
+
+    # Visualization of synthetic data distribution
+    st.header("Synthetic Data Distribution")
     vsd = visualize_synthetic_data(df)
     st.pyplot(vsd)
 
+    # Split data into training and testing sets
     X_train, X_test, y_train, y_test = split_data(df)
 
+    # Train a decision tree classifier
     clf = train_decision_tree(X_train, y_train)
 
+    # Save the trained model
     save_model(clf)
 
+    # Load the saved model
     loaded_model = load_model()
 
+    # Visualization of decision boundaries and operation data
+    st.header("Decision Boundaries and Operation Data")
     vdb = visualize_decision_boundaries(loaded_model, X_test, y_test, df)
     st.pyplot(vdb)
 
+    # Actual vs Predicted operation data
+    st.header("Actual vs Predicted Operation Data")
     fig = evaluate_model(loaded_model, X_test, y_test, df)
     st.pyplot(fig)
 
