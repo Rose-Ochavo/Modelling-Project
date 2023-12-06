@@ -94,7 +94,7 @@ def evaluate_model(model, X_test, y_test, df):
     print("\nClassification Report:")
     print(classification_report(y_test, y_pred))
 
-    # Plot actual and predicted data points with more meaningful plot titles
+    # Plot actual and predicted data points 
     fig, ax = plt.subplots(figsize=(12, 6))
 
     # Plot actual data points
