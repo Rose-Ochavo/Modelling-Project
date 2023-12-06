@@ -49,11 +49,9 @@ def train_decision_tree(X_train, y_train):
 
 def save_model(model, filename="trained_model.joblib"):
     joblib.dump(model, filename)
-    print(f"Model saved to {filename}")
 
 def load_model(filename="trained_model.joblib"):
     loaded_model = joblib.load(filename)
-    print(f"Model loaded from {filename}")
     return loaded_model
 
 def visualize_decision_boundaries(model, X, y, df):
@@ -63,21 +61,30 @@ def visualize_decision_boundaries(model, X, y, df):
     # Plot actual data points
     plt.subplot(1, 2, 1)
     sns.scatterplot(x='Feature_1', y='Feature_2', hue='Class', data=df, palette='viridis')
-    plt.title('Actual Operation Data')
+    plt.title('Actual Data Points')
     plt.xlabel('Feature 1')
     plt.ylabel('Feature 2')
 
     # Plot decision boundaries
     plt.subplot(1, 2, 2)
-    h = .02
-    x_min, x_max = X.iloc[:, 0].min() - 1, X.iloc[:, 0].max() + 1
-    y_min, y_max = X.iloc[:, 1].min() - 1, X.iloc[:, 1].max() + 1
+
+    # Create a meshgrid to cover the entire feature space
+    h = 0.02
+    x_min, x_max = X.iloc[:, 0].min() - 6, X.iloc[:, 0].max() + 2
+    y_min, y_max = X.iloc[:, 1].min() - 5, X.iloc[:, 1].max() + 2
     xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
+
+
+    # Predict on the meshgrid to obtain decision boundaries
     Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
     Z = Z.reshape(xx.shape)
+
+    # Visualize the decision boundaries
     plt.contourf(xx, yy, Z, alpha=0.8, cmap=plt.cm.Paired)
+
+    # Scatter plot of the actual data points
     sns.scatterplot(x='Feature_1', y='Feature_2', hue='Class', data=df, palette='viridis', alpha=0.5)
-    plt.title('Decision Boundaries and Operation Data')
+    plt.title('Decision Boundaries and Data Points')
     plt.xlabel('Feature 1')
     plt.ylabel('Feature 2')
     plt.legend(title='Class')
@@ -90,9 +97,9 @@ def evaluate_model(model, X_test, y_test, df):
 
     # Calculate accuracy and display classification report
     accuracy = accuracy_score(y_test, y_pred)
-    print("Accuracy:", accuracy)
-    print("\nClassification Report:")
-    print(classification_report(y_test, y_pred))
+    st.write("Accuracy:", accuracy)
+    # st.write("\nClassification Report:")
+    # st.write(classification_report(y_test, y_pred))
 
     # Plot actual and predicted data points 
     fig, ax = plt.subplots(figsize=(12, 6))
@@ -100,7 +107,7 @@ def evaluate_model(model, X_test, y_test, df):
     # Plot actual data points
     plt.subplot(1, 2, 1)
     sns.scatterplot(x='Feature_1', y='Feature_2', hue='Class', data=df, palette='viridis')
-    plt.title('Actual Operation Data')
+    plt.title('Actual Data Points')
     plt.xlabel('Feature 1')
     plt.ylabel('Feature 2')
 
@@ -108,7 +115,7 @@ def evaluate_model(model, X_test, y_test, df):
     plt.subplot(1, 2, 2)
     sns.scatterplot(x='Feature_1', y='Feature_2', hue='Class', data=df, palette='viridis', alpha=0.5)
     sns.scatterplot(x=X_test['Feature_1'], y=X_test['Feature_2'], hue=y_pred, marker='X', s=100, palette='Set2', edgecolor='black')
-    plt.title('Actual vs Predicted Operation Data')
+    plt.title('Actual vs Predicted Data')
     plt.xlabel('Feature 1')
     plt.ylabel('Feature 2')
 
@@ -149,13 +156,13 @@ def main():
     # Load the saved model
     loaded_model = load_model()
 
-    # Visualization of decision boundaries and operation data
-    st.header("Decision Boundaries and Operation Data")
+    # Visualization of decision boundaries and Data Points
+    st.header("Decision Boundaries and Data Points")
     vdb = visualize_decision_boundaries(loaded_model, X_test, y_test, df)
     st.pyplot(vdb)
 
-    # Actual vs Predicted operation data
-    st.header("Actual vs Predicted Operation Data")
+    # Actual vs Predicted data
+    st.header("Actual vs Predicted Data")
     fig = evaluate_model(loaded_model, X_test, y_test, df)
     st.pyplot(fig)
 
