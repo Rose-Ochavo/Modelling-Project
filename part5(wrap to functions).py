@@ -11,7 +11,20 @@ import seaborn as sns
 def set_random_seed(seed=42):
     np.random.seed(seed)
 
+# Generate synthetic data based on provided class properties
 def generate_synthetic_data(class_properties, samples_per_class=300, num_dimensions=2):
+    """
+    This function generates synthetic data based on provided characteristics for each class.
+
+    Parameters:
+    - class_properties (dict): Characteristics of each class, including mean and standard deviation.
+    - samples_per_class (int): Number of synthetic samples to generate for each class.
+    - num_dimensions (int): Number of features.
+
+    Returns:
+    - data (numpy.ndarray): Synthetic data with corresponding labels.
+    """
+        
     data = []
     for class_id, props in class_properties.items():
         mean, std = props['mean'], props['std']
@@ -25,10 +38,19 @@ def generate_synthetic_data(class_properties, samples_per_class=300, num_dimensi
     np.random.shuffle(data)
     return data
 
+# Create a Pandas DataFrame from the generated synthetic data
 def create_dataframe(data, num_dimensions):
+    """
+    This function converts the generated synthetic data into a structured DataFrame.
+
+    Returns:
+    - df (pandas.DataFrame): A structured DataFrame containing synthetic data.
+    """
+
     column_names = [f'Feature_{i+1}' for i in range(num_dimensions)] + ['Class']
     return pd.DataFrame(data, columns=column_names)
 
+# Visualize the synthetic data distribution
 def visualize_synthetic_data(df):
     fig, ax = plt.subplots(figsize=(8, 6))
     sns.scatterplot(x='Feature_1', y='Feature_2', data=df, color='blue', palette='viridis')
@@ -37,16 +59,19 @@ def visualize_synthetic_data(df):
     plt.ylabel('Feature 2')
     return fig
 
+# Split the data into training and testing sets
 def split_data(df):
     X = df.iloc[:, :-1]
     y = df['Class']
     return train_test_split(X, y, test_size=0.2, random_state=42)
 
+# This function trains a decision tree classifier using the provided training data.
 def train_decision_tree(X_train, y_train):
     clf = DecisionTreeClassifier(random_state=42)
     clf.fit(X_train, y_train)
     return clf
 
+# Save the trained model to a file using joblib
 def save_model(model, filename="trained_model.joblib"):
     joblib.dump(model, filename)
 
@@ -54,6 +79,8 @@ def load_model(filename="trained_model.joblib"):
     loaded_model = joblib.load(filename)
     return loaded_model
 
+# Visualize decision boundaries and actual data points
+# This function visualizes decision boundaries and actual data points based on the trained model.
 def visualize_decision_boundaries(model, X, y, df):
     # Visualization of Decision Boundaries
     fig, ax = plt.subplots(figsize=(12, 6))
@@ -74,10 +101,9 @@ def visualize_decision_boundaries(model, X, y, df):
     y_min, y_max = X.iloc[:, 1].min() - 5, X.iloc[:, 1].max() + 2
     xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
 
-
     # Predict on the meshgrid to obtain decision boundaries
-    Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
-    Z = Z.reshape(xx.shape)
+    Z = model.predict(np.c_[xx.ravel(), yy.ravel()]) # Uses the trained model to predict the class for each point in the feature space
+    Z = Z.reshape(xx.shape) # Reshapes the predictions back into the shape of the meshgrid.
 
     # Visualize the decision boundaries
     plt.contourf(xx, yy, Z, alpha=0.8, cmap=plt.cm.Paired)
@@ -91,7 +117,10 @@ def visualize_decision_boundaries(model, X, y, df):
 
     return fig
 
+# Evaluate the trained model on the test set and visualize actual vs predicted data
 def evaluate_model(model, X_test, y_test, df):
+    # This function evaluates the trained model on the test set and visualizes actual vs predicted data.
+    
     # Predict on the test set
     y_pred = model.predict(X_test)
 
