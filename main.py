@@ -162,7 +162,7 @@ def main():
     loaded_model = load_model()
 
     # Visualization of decision boundaries and Data Points
-    st.header("Decision Boundaries and Data Points")
+    st.header("Decision Boundaries")
     vdb = visualize_decision_boundaries(loaded_model, X_test, y_test, df)
     st.pyplot(vdb)
 
